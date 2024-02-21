@@ -1,0 +1,32 @@
+SELECT *
+FROM PD2023_WK01;
+
+//Splitting the first part and saving as "Bank Code"
+SELECT SPLIT_PART(transaction_code,'-',1) as "Bank Code"
+FROM PD2023_WK01;
+
+//Replacing Values in Online or In Person, 1= online, 2 =in-person
+SELECT CASE online_or_in_person WHEN 1 THEN 'Online' ELSE 'In-Person' END
+FROM PD2023_WK01;
+
+//Change date to be day of the week
+SELECT DAYNAME(TO_DATE(LEFT(transaction_date,10),'DD/MM/YYYY'))
+FROM PD2023_WK01;
+
+//Total Transaction value by each bank
+SELECT SPLIT_PART(transaction_code,'-',1) as "Bank Code", SUM(value)
+FROM PD2023_WK01
+GROUP BY "Bank Code"
+ORDER BY sum(value) DESC;
+
+//Total Transaction Value by Bank, Day of Week and Transaction type
+SELECT SPLIT_PART(transaction_code,'-',1) as "Bank Code", SUM(value),CASE online_or_in_person WHEN 1 THEN 'Online' ELSE 'In-Person' END, DAYNAME(TO_DATE(LEFT(transaction_date,10),'DD/MM/YYYY'))
+FROM PD2023_WK01
+GROUP BY "Bank Code", transaction_date, online_or_in_person
+ORDER BY SUM(value) DESC;
+
+//Transaction Value by Bank and Customer Code
+SELECT SPLIT_PART(transaction_code,'-',1) as "Bank Code", SUM(value), customer_code
+FROM PD2023_WK01
+GROUP BY "Bank Code", customer_code
+ORDER BY SUM(value) DESC;
